@@ -1,37 +1,47 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState } from "react"; // Import React and the useState hook for managing component state
+import axios from "axios"; // Import axios for making HTTP requests
 
+// Define the ContactForm functional component
 const ContactForm = () => {
-  const [name, setName] = useState("");
-  const [occupation, setOccupation] = useState("");
+  // Declare state variables for the form inputs: 'first_name' and 'last_name'
+  const [first_name, setfirst_name] = useState(""); // 'first_name' holds the input value for the first_name field
+  const [last_name, setlast_name] = useState(""); // 'last_name' holds the input value for the last_name field
 
+  // Define the function to handle form submission
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent the default form submission behavior (page reload)
+
+    // Send a POST request to the server with the form data
     await axios.post("http://localhost:5000/contacts", {
-      name,
-      occupation,
+      first_name, // Send the 'first_name' state as part of the request body
+      last_name, // Send the 'last_name' state as part of the request body
     });
-    setName("");
-    setOccupation("");
-    window.location.reload(); // refresh contact list
+
+    // Clear the form inputs after submission
+    setfirst_name(""); // Reset the 'first_name' state to an empty string
+    setlast_name(""); // Reset the 'last_name' state to an empty string
+
+    // Refresh the page to update the contact list (not ideal for modern React apps)
+    window.location.reload();
   };
 
+  // Render the form UI
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Add Contact</h2>
+    <form onSubmit={handleSubmit}> {/* Attach the handleSubmit function to the form's onSubmit event */}
+      <h2>Add Contact</h2> {/* Form heading */}
       <input
-        placeholder="Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        required
+        placeholder="first_name" // Placeholder text for the first_name input
+        value={first_name} // Bind the input value to the 'first_name' state
+        onChange={(e) => setfirst_name(e.target.value)} // Update the 'first_name' state when the input changes
+        required // Make the input field required
       />
       <input
-        placeholder="Occupation"
-        value={occupation}
-        onChange={(e) => setOccupation(e.target.value)}
-        required
+        placeholder="last_name" // Placeholder text for the last_name input
+        value={last_name} // Bind the input value to the 'last_name' state
+        onChange={(e) => setlast_name(e.target.value)} // Update the 'last_name' state when the input changes
+        required // Make the input field required
       />
-      <button type="submit">Add</button>
+      <button type="submit">Add</button> {/* Submit button to trigger form submission */}
     </form>
   );
 };

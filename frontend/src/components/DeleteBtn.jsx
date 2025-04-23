@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 // Defining the ContactList functional component
-const ContactList = () => {
+const DeleteBtn = () => {
   // State to store the list of contacts, initialized as an empty array
   const [contacts, setContacts] = useState([]);
 
@@ -22,19 +22,12 @@ const ContactList = () => {
 
   // Rendering the component's UI
   return (
-    <div>
-      {/* Heading for the contact list */}
-      <h2>All Contacts</h2>
-      <ul>
-        {/* Iterating over the contacts array to display each contact */}
-        {contacts.map((contact) => (
-          <li key={contact.id}>
-            {/* Displaying the contact's name in bold and their occupation */}
-            {contact.first_name} {contact.last_name}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <button
+      onClick={async () => {
+        // Making a DELETE request to the API endpoint to delete a contact
+        await axios.delete("http://localhost:5000/contacts/1"); // Replace '1' with the actual contact ID to delete
+        fetchContacts(); // Refresh the contact list after deletion
+      }}>delete</button>
   );
 };
 
