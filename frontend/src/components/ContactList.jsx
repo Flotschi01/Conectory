@@ -26,16 +26,28 @@ const ContactList = () => {
     <div>
       {/* Heading for the contact list */}
       <h2>All Contacts</h2>
-      <ul>
-        {/* Iterating over the contacts array to display each contact */}
-        {contacts.map((contact) => (
-          <li key={contact.id}>
-            {/* Displaying the contact's name in bold and their occupation */}
-            <span>{contact.first_name} {contact.last_name}</span>
-            <DeleteBtn contId={contact.id} onDelete={fetchContacts}/>
-          </li> 
-        ))}
-      </ul>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {/* Iterating over the contacts array to display each contact */}
+          {contacts.map((contact) => (
+            <tr key={contact.id}>
+              <td>{contact.first_name}</td>
+              <td>{contact.last_name}</td>
+              <td>
+                <DeleteBtn contId={contact.id} onDelete={fetchContacts} />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

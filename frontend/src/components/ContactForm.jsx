@@ -41,7 +41,7 @@ const ContactForm = () => {
         onChange={(e) => setlast_name(e.target.value)} // Update the 'last_name' state when the input changes
         required // Make the input field required
       />
-      <button type="submit">Add</button> {/* Submit button to trigger form submission */}
+      <button type="submit">Ok</button> {/* Submit button to trigger form submission */}
     </form>
   );
 };
