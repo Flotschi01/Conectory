@@ -1,6 +1,7 @@
 // Importing necessary modules from React and axios for state management, side effects, and HTTP requests
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import DeleteBtn from "./DeleteBtn"; // Importing the DeleteBtn component for deleting contacts
 
 // Defining the ContactList functional component
 const ContactList = () => {
@@ -30,8 +31,9 @@ const ContactList = () => {
         {contacts.map((contact) => (
           <li key={contact.id}>
             {/* Displaying the contact's name in bold and their occupation */}
-            {contact.first_name} {contact.last_name}
-          </li>
+            <span>{contact.first_name} {contact.last_name}</span>
+            <DeleteBtn contId={contact.id} onDelete={fetchContacts}/>
+          </li> 
         ))}
       </ul>
     </div>

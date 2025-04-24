@@ -38,12 +38,16 @@ def add_contact():
     return jsonify({"message": "Contact added"}), 201
 
 # Add PUT and DELETE routes as needed
-# @app.route("/contacts/<int:contact_id>", methods=["DELETE"])
-# def delete_contact(contact_id):
-#     cursor = mysql.connection.cursor()
-#     cursor.execute("DELETE FROM contacts WHERE id = %s", (contact_id,))
-#     mysql.connection.commit()
-#     return jsonify({"message": "Contact deleted"}), 200
+@app.route("/contacts/<int:contact_id>", methods=["DELETE"])
+def delete_contact(contact_id):
+    if request.method == "OPTIONS":
+        # Handle preflight request
+        return jsonify({"message": "Preflight request successful"}), 200
+
+    cursor = mysql.connection.cursor()
+    cursor.execute("DELETE FROM contacts WHERE id = %s", (contact_id,))
+    mysql.connection.commit()
+    return jsonify({"message": "Contact deleted"}), 200
 
 if __name__ == "__main__":
     app.run(debug=True)
