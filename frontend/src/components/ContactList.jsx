@@ -32,6 +32,7 @@ const ContactList = () => {
           <tr>
             <th>First Name</th>
             <th>Last Name</th>
+            <th>crated_at</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -41,6 +42,7 @@ const ContactList = () => {
             <tr key={contact.id}>
               <td>{contact.first_name}</td>
               <td>{contact.last_name}</td>
+              <td>{contact.created_at}</td>
               <td>
                 <DeleteBtn contId={contact.id} onDelete={fetchContacts} />
               </td>

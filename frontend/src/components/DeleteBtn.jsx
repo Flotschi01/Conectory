@@ -5,7 +5,7 @@ const DeleteBtn = ({ contId, onDelete }) => {
   const handleDelete = async () => {
     try {
       // Make DELETE request to API
-      await axios.delete(`http://localhost:5000/contacts/${contId}`);
+      await axios.delete(`http://localhost:5000/contacts/del/${contId}`);
       console.log("Deleted contact with ID:", contId);
       
       // Call the parent's refresh function

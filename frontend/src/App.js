@@ -5,6 +5,7 @@ import ContactForm from "./components/ContactForm";
 import ContactDropDown from "./components/ContactDropDown"; // Importing the ContactDropDown component
 
 function App() {
+
   return (
     <div style={{ padding: "2rem" }}>
       <header>
@@ -14,9 +15,9 @@ function App() {
         <section>
           <div style={{display: "flex", justifyContent: "space-between"}}>
             <h2>Contact List</h2>          
-            <ContactDropDown />
+            <ContactDropDown Component={<ContactForm />} />
           </div>
-          <ContactList />
+          <ContactDropDown Component={<ContactList />} />
         </section>
       </main>
       <footer>

@@ -19,9 +19,9 @@ mysql = MySQL(app)
 @app.route("/contacts", methods=["GET"])
 def get_contacts():
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT id, first_name, last_name FROM contacts")
+    cursor.execute("SELECT id, first_name, last_name, created_at FROM contacts")
     rows = cursor.fetchall()
-    contacts = [{"id": row[0], "first_name": row[1], "last_name": row[2]} for row in rows]
+    contacts = [{"id": row[0], "first_name": row[1], "last_name": row[2], "created_at": row[3]} for row in rows]
     return jsonify(contacts)
 
 @app.route("/contacts", methods=["POST"])
@@ -38,7 +38,7 @@ def add_contact():
     return jsonify({"message": "Contact added"}), 201
 
 # Add PUT and DELETE routes as needed
-@app.route("/contacts/<int:contact_id>", methods=["DELETE"])
+@app.route("/contacts/del/<int:contact_id>", methods=["DELETE"])
 def delete_contact(contact_id):
     if request.method == "OPTIONS":
         # Handle preflight request
