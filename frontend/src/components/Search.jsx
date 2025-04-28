@@ -24,7 +24,7 @@ return (
             <button type="submit">Submit</button>
         </form> 
         {showComponent && <ContactList query={sql} /> }
-        <ProjSelecter></ProjSelecter>
+        <ProjSelecter t_name={"contacts"}></ProjSelecter>
     </div>
 );
 };

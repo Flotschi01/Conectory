@@ -1,18 +1,45 @@
 import React, { useState } from "react";
-import ContactList from "./ContactList";
+import axios from "axios";
 import { useRefresh } from "./useRefresh";
+import { useEffect } from "react";
 
-const ProjSelecter = ({nothing}) => {
-  
+const ProjSelecter = ({t_name}) => {
+const { refresh } = useRefresh();
+const [Columns, setColumns] = useState(["id"]);
 
+const getColumns = async () => {
+    try {
+        const response = await axios.get("http://localhost:5000/getColumns", {
+            params: {
+                table_name: t_name,
+            },
+        });
+        console.log("Columns:", response.data);
+        setColumns(response.data);
+    } catch (error) {
+        console.error("Error fetching SQL:", error);
+    }
+}
+  useEffect(() => {
+    getColumns();
+  }, []); // Empty dependency array ensures this runs only once
 
 return (
+    <div>
+        <h5>select columns</h5>
     <ul>
-        <li><button></button></li>
-        <li><button></button></li>        
-        <li><button></button></li>
+        {Columns.map((column) => (
+            <Item key={column} name={column} />
+        ))}
     </ul>
+    </div>
+
 );
 };
+const Item = ({ name }) => {
+    return (
+        <li><span>{name}</span><input type="checkbox" defaultChecked></input></li>
+    )
+}
 
 export default ProjSelecter;

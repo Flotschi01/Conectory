@@ -1,12 +1,14 @@
-import React, { useState } from "react"; // Import React and the useState hook for managing component state
+import React, { useState, useRef } from "react"; // Import React and the useState hook for managing component state
 import axios from "axios"; // Import axios for making HTTP requests
 import { useRefresh } from "./useRefresh";
+
 // Define the ContactForm functional component
 const ContactForm = () => {
   // Declare state variables for the form inputs: 'first_name' and 'last_name'
   const [first_name, setfirst_name] = useState(""); // 'first_name' holds the input value for the first_name field
   const [last_name, setlast_name] = useState(""); // 'last_name' holds the input value for the last_name field
   const { refresh } = useRefresh();
+  const inputRef = useRef(null);
 
   const handleSubmit = async (e) => {
     
@@ -24,17 +26,28 @@ const ContactForm = () => {
     setlast_name(""); // Reset the 'last_name' state to an empty string
     refresh(); // Call the refresh function to trigger a re-render or fetch updated data
   };
+  const handleKeyDown = (event) => {
+    // Check if Enter key is pressed (keyCode 13 or 'Enter')
+    if (event.key === 'Enter') {
 
+      // Reset the focus to the input element
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    }
+  };
   // Render the form UI
   return (
     <form onSubmit={handleSubmit}> {/* Attach the handleSubmit function to the form's onSubmit event */}
       <input
+        ref={inputRef}
         placeholder="first_name" // Placeholder text for the first_name input
         value={first_name} // Bind the input value to the 'first_name' state
         onChange={(e) => setfirst_name(e.target.value)} // Update the 'first_name' state when the input changes
         required // Make the input field required
       />
       <input
+        onKeyDown={handleKeyDown}
         placeholder="last_name" // Placeholder text for the last_name input
         value={last_name} // Bind the input value to the 'last_name' state
         onChange={(e) => setlast_name(e.target.value)} // Update the 'last_name' state when the input changes
@@ -44,5 +57,7 @@ const ContactForm = () => {
     </form>
   );
 };
+
+
 
 export default ContactForm;
