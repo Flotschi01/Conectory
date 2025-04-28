@@ -20,7 +20,7 @@ return (
         >
             <input type="text" name="sqlInput" placeholder="Enter SQL query" />
             <button type="submit">Submit</button>
-        </form>
+        </form> 
         {showComponent && <ContactList query={sql} /> }
     </div>
 );

@@ -15,15 +15,26 @@ mysql = MySQL(app)
 @app.route("/contacts", methods=["GET"])
 def get_contacts():
     cursor = mysql.connection.cursor()
+    projection = []
     if request.args.get("sql") == "" or request.args.get("sql") is None:
         cursor.execute("SELECT id, first_name, last_name, created_at FROM contacts")
+        projection = ["id", "first_name", "last_name", "created_at"]
     else:
         sql_query = request.args.get("sql")
         print(f"SQL Query: {sql_query}")
+        projection = sql_query.split("SELECT ")[1].split(" FROM")[0].split(",")
+        if(projection[0] == "*"):
+            projection = ["id", "first_name", "last_name", "created_at"]
         cursor.execute(sql_query)   # Use the provided SQL query
     rows = cursor.fetchall()
-    contacts = [{"id": row[0], "first_name": row[1], "last_name": row[2], "created_at": row[3]} for row in rows]
-    print(f"Contacts: {contacts}")
+    contacts = []
+    for row in rows:
+            temp = {}
+            for index, col in enumerate(projection):
+                temp[col] = row[index]
+            contacts.append(temp)
+    # contacts = [{"id": row[0], "first_name": row[1], "last_name": row[2], "created_at": row[3]} for row in rows]
+    print(f"Contacts: {jsonify(contacts)}")
     return jsonify(contacts)
 
 @app.route("/contacts", methods=["POST"])
