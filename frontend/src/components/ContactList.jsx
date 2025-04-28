@@ -4,16 +4,33 @@ import axios from "axios";
 import DeleteBtn from "./DeleteBtn"; // Importing the DeleteBtn component for deleting contacts
 
 // Defining the ContactList functional component
-const ContactList = () => {
+const ContactList = ({query}) => {
   // State to store the list of contacts, initialized as an empty array
-  const [contacts, setContacts] = useState([]);
+  const [contacts, setContacts] = useState([{
+    "created_at": "error",
+    "first_name": "error",
+    "id": 0,
+    "last_name": "error"
+  },]);
 
+  const fetchSql = async () => {
+    try {
+      console.log("Fetching SQL:", query);
+      const response = await axios.get("http://localhost:5000/contacts", {
+        params: {
+          sql: query,
+        },
+      });
+      setContacts(response.data);
+    } catch (error) {
+      console.error("Error fetching SQL:", error);
+    }
+  };
   // Function to fetch contacts from the backend API
   const fetchContacts = async () => {
     // Making a GET request to the API endpoint
-    const response = await axios.get("http://localhost:5000/contacts");
+    fetchSql();//await axios.get("http://localhost:5000/contacts");
     // Updating the state with the fetched data
-    setContacts(response.data);
   };
 
   // useEffect hook to fetch contacts when the component is mounted

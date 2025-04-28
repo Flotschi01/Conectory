@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import ContactForm from "./ContactForm";
 
-const ContactDropDown = ({Component}) => {
+const ContactDropDown = ({Component, Message = "Toggle Component"}) => {
   const [showComponent, setShowComponent] = useState(false);
 
   const handleClick = () => {
@@ -10,8 +10,7 @@ const ContactDropDown = ({Component}) => {
   };
   return (
     <div>
-    <button onClick={handleClick}>Toggle Component</button>
-      {console.log(Component)}
+    <button onClick={handleClick}>{Message}</button>
       {showComponent && Component}
       </div>
   );

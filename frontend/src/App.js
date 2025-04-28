@@ -3,6 +3,7 @@ import "./App.css"; // Importing CSS styles for the app
 import ContactList from "./components/ContactList";
 import ContactForm from "./components/ContactForm";
 import ContactDropDown from "./components/ContactDropDown"; // Importing the ContactDropDown component
+import Search from "./components/Search";
 
 function App() {
 
@@ -15,9 +16,9 @@ function App() {
         <section>
           <div style={{display: "flex", justifyContent: "space-between"}}>
             <h2>Contact List</h2>          
-            <ContactDropDown Component={<ContactForm />} />
+            <ContactDropDown Component={<ContactForm />} Message="Add Contact" />
           </div>
-          <ContactDropDown Component={<ContactList />} />
+          <Search />
         </section>
       </main>
       <footer>

@@ -28,7 +28,6 @@ const ContactForm = () => {
   // Render the form UI
   return (
     <form onSubmit={handleSubmit}> {/* Attach the handleSubmit function to the form's onSubmit event */}
-      <h2>Add Contact</h2> {/* Form heading */}
       <input
         placeholder="first_name" // Placeholder text for the first_name input
         value={first_name} // Bind the input value to the 'first_name' state
