@@ -2,9 +2,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import DeleteBtn from "./DeleteBtn"; // Importing the DeleteBtn component for deleting contacts
+import { useRefresh } from "./useRefresh";
 
 // Defining the ContactList functional component
 const ContactList = ({query}) => {
+  const { refreshCounter } = useRefresh();
+
   // State to store the list of contacts, initialized as an empty array
   const [contacts, setContacts] = useState([{
     "created_at": "error",
@@ -12,10 +15,15 @@ const ContactList = ({query}) => {
     "id": 0,
     "last_name": "error"
   },]);
+  useEffect(() => {
+    console.log("Display refreshed! Counter:", refreshCounter);
+    // Fetch data or do whatever refresh action you need here
+    fetchSql(); // Call the function to fetch data when refreshCounter changes
+  }, [refreshCounter]);
+
 
   const fetchSql = async () => {
     try {
-      console.log("Fetching SQL:", query);
       const response = await axios.get("http://localhost:5000/contacts", {
         params: {
           sql: query,
@@ -27,15 +35,10 @@ const ContactList = ({query}) => {
     }
   };
   // Function to fetch contacts from the backend API
-  const fetchContacts = async () => {
-    // Making a GET request to the API endpoint
-    fetchSql();//await axios.get("http://localhost:5000/contacts");
-    // Updating the state with the fetched data
-  };
 
   // useEffect hook to fetch contacts when the component is mounted
   useEffect(() => {
-    fetchContacts(); // Calling the fetchContacts function
+    fetchSql(); // Calling the fetchContacts function
   }, []); // Empty dependency array ensures this runs only once
 
   // Rendering the component's UI
@@ -55,11 +58,12 @@ const ContactList = ({query}) => {
           {/* Iterating over the contacts array to display each contact */}
           {contacts.map((contact) => (
             <tr key={contact.id}>
+              {/* Displaying each contact's details in table cells */}
               {Object.keys(contact).map((key) => (
                 <td key={key}>{contact[key]}</td>
               ))}
               <td>
-                <DeleteBtn contId={contact.id} onDelete={fetchContacts} />
+                <DeleteBtn contId={contact.id} onDelete={fetchSql} />
               </td>
             </tr>
           ))}

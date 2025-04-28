@@ -1,14 +1,14 @@
 import React, { useState } from "react"; // Import React and the useState hook for managing component state
 import axios from "axios"; // Import axios for making HTTP requests
-
 // Define the ContactForm functional component
 const ContactForm = () => {
   // Declare state variables for the form inputs: 'first_name' and 'last_name'
   const [first_name, setfirst_name] = useState(""); // 'first_name' holds the input value for the first_name field
   const [last_name, setlast_name] = useState(""); // 'last_name' holds the input value for the last_name field
 
-  // Define the function to handle form submission
   const handleSubmit = async (e) => {
+    
+
     e.preventDefault(); // Prevent the default form submission behavior (page reload)
 
     // Send a POST request to the server with the form data
@@ -21,8 +21,6 @@ const ContactForm = () => {
     setfirst_name(""); // Reset the 'first_name' state to an empty string
     setlast_name(""); // Reset the 'last_name' state to an empty string
 
-    // Refresh the page to update the contact list (not ideal for modern React apps)
-    window.location.reload();
   };
 
   // Render the form UI

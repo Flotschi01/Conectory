@@ -4,7 +4,7 @@ import ContactList from "./components/ContactList";
 import ContactForm from "./components/ContactForm";
 import ContactDropDown from "./components/ContactDropDown"; // Importing the ContactDropDown component
 import Search from "./components/Search";
-
+import { RefreshProvider } from "./components/useRefresh"; // Importing the useRefresh custom hook
 function App() {
 
   return (
@@ -13,6 +13,7 @@ function App() {
         <h1>Contact Manager</h1>
       </header>
       <main>
+        <RefreshProvider>
         <section>
           <div style={{display: "flex", justifyContent: "space-between"}}>
             <h2>Contact List</h2>          
@@ -20,6 +21,7 @@ function App() {
           </div>
           <Search />
         </section>
+        </RefreshProvider>
       </main>
       <footer>
         <p>&copy; 2025 Flotschi</p>
