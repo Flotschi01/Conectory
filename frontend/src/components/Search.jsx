@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import ContactList from "./ContactList";
 import { useRefresh } from "./useRefresh";
+import ProjSelecter from "./Projection";
 
 const Search = ({ contId, onDelete, Component}) => {
   const [showComponent, setShowComponent] = useState(false);
@@ -23,6 +24,7 @@ return (
             <button type="submit">Submit</button>
         </form> 
         {showComponent && <ContactList query={sql} /> }
+        <ProjSelecter></ProjSelecter>
     </div>
 );
 };

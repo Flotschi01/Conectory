@@ -63,7 +63,7 @@ const ContactList = ({query}) => {
                 <td key={key}>{contact[key]}</td>
               ))}
               <td>
-                <DeleteBtn contId={contact.id} onDelete={fetchSql} />
+                <DeleteBtn contId={contact.id}  />
               </td>
             </tr>
           ))}

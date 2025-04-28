@@ -12,6 +12,9 @@ for key, value in db_config.items():
     print (f"Configuring {key} with value: {value}")
 mysql = MySQL(app)
 
+#----------------------------------------
+#Get Contacts via SQL
+#----------------------------------------
 @app.route("/contacts", methods=["GET"])
 def get_contacts():
     cursor = mysql.connection.cursor()
@@ -36,7 +39,19 @@ def get_contacts():
     # contacts = [{"id": row[0], "first_name": row[1], "last_name": row[2], "created_at": row[3]} for row in rows]
     print(f"Contacts: {jsonify(contacts)}")
     return jsonify(contacts)
-
+#----------------------------------------
+#Get Columns via SQL
+#----------------------------------------
+@app.route("/getColumns", methods=["GET"])
+def get_Columns():
+    table_name = request.args.get("table_name")
+    cursor = mysql.connection.cursor()
+    cursor.execute(f"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{table_name}'")
+    columns = [row[0] for row in cursor.fetchall()]
+    return jsonify(columns)
+#----------------------------------------
+#Add a new contact
+#----------------------------------------
 @app.route("/contacts", methods=["POST"])
 def add_contact():
     data = request.get_json()
@@ -49,8 +64,9 @@ def add_contact():
     )
     mysql.connection.commit()
     return jsonify({"message": "Contact added"}), 201
-
-# Add PUT and DELETE routes as needed
+#----------------------------------------
+#Delete via ID
+#----------------------------------------
 @app.route("/contacts/del/<int:contact_id>", methods=["DELETE"])
 def delete_contact(contact_id):
     if request.method == "OPTIONS":
