@@ -12,12 +12,18 @@ export const RefreshProvider = ({ children }) => {
     setRefreshCounter((prev) => prev + 1);
   }, []);
 
+  const getApiUrl = useCallback(() => {
+    const hostname = window.location.hostname; // Dynamically gets IP/domain
+    return `http://${hostname}:5000/`;
+  }, []);
+
   return (
-    <RefreshContext.Provider value={{ refreshCounter, refresh }}>
+    <RefreshContext.Provider value={{ refreshCounter, refresh, getApiUrl }}>
       {children}
     </RefreshContext.Provider>
   );
 };
+
 
 // Custom Hook
 export const useRefresh = () => {

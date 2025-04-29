@@ -4,12 +4,14 @@ import { useRefresh } from "./useRefresh";
 import { useEffect } from "react";
 
 const ProjSelecter = ({t_name}) => {
+const { getApiUrl } = useRefresh();
 const { refresh } = useRefresh();
-const [Columns, setColumns] = useState(["id"]);
 
+const [Columns, setColumns] = useState(["id"]);
+// 
 const getColumns = async () => {
     try {
-        const response = await axios.get("http://localhost:5000/getColumns", {
+        const response = await axios.get(getApiUrl() + "getColumns", {
             params: {
                 table_name: t_name,
             },
@@ -19,9 +21,11 @@ const getColumns = async () => {
     } catch (error) {
         console.error("Error fetching SQL:", error);
     }
+    refresh(); // Call the refresh function to trigger a re-render
 }
   useEffect(() => {
     getColumns();
+    console.log("address:" + getApiUrl());
   }, []); // Empty dependency array ensures this runs only once
 
 return (

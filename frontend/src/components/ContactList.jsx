@@ -7,6 +7,7 @@ import { useRefresh } from "./useRefresh";
 // Defining the ContactList functional component
 const ContactList = ({query}) => {
   const { refreshCounter } = useRefresh();
+  const { getApiUrl } = useRefresh();
 
   // State to store the list of contacts, initialized as an empty array
   const [contacts, setContacts] = useState([{
@@ -24,7 +25,7 @@ const ContactList = ({query}) => {
 
   const fetchSql = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/contacts", {
+      const response = await axios.get(getApiUrl() + "contacts", {
         params: {
           sql: query,
         },

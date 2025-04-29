@@ -16,7 +16,7 @@ const ContactForm = () => {
     e.preventDefault(); // Prevent the default form submission behavior (page reload)
 
     // Send a POST request to the server with the form data
-    await axios.post("http://localhost:5000/contacts", {
+    await axios.post(getApiUrl() + "contacts", {
       first_name, // Send the 'first_name' state as part of the request body
       last_name, // Send the 'last_name' state as part of the request body
     });
