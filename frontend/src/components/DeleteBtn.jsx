@@ -4,7 +4,7 @@ import { useRefresh } from "./useRefresh";
 
 const DeleteBtn = ({ contId }) => {
   const { refresh } = useRefresh();
-
+  const { getApiUrl } = useRefresh();
   const handleDelete = async () => {
     try {
       // Make DELETE request to API

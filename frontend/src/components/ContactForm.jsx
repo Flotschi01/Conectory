@@ -7,7 +7,7 @@ const ContactForm = () => {
   // Declare state variables for the form inputs: 'first_name' and 'last_name'
   const [first_name, setfirst_name] = useState(""); // 'first_name' holds the input value for the first_name field
   const [last_name, setlast_name] = useState(""); // 'last_name' holds the input value for the last_name field
-  const { refresh } = useRefresh();
+  const { refresh, getApiUrl } = useRefresh();
   const inputRef = useRef(null);
 
   const handleSubmit = async (e) => {
