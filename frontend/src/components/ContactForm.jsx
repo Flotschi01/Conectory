@@ -4,27 +4,27 @@ import { useRefresh } from "./useRefresh";
 
 // Define the ContactForm functional component
 const ContactForm = () => {
-  // Declare state variables for the form inputs: 'first_name' and 'last_name'
-  const [first_name, setfirst_name] = useState(""); // 'first_name' holds the input value for the first_name field
-  const [last_name, setlast_name] = useState(""); // 'last_name' holds the input value for the last_name field
-  const { refresh, getApiUrl } = useRefresh();
+  const { refresh, getApiUrl, sqlCols } = useRefresh();
   const inputRef = useRef(null);
 
+  const [formData, setFormData] = useState(
+    sqlCols.reduce((acc, field) => ({ ...acc, [field]: "" }), {})
+  );
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
   const handleSubmit = async (e) => {
-    
-
     e.preventDefault(); // Prevent the default form submission behavior (page reload)
-
     // Send a POST request to the server with the form data
     await axios.post(getApiUrl() + "contacts", {
-      first_name, // Send the 'first_name' state as part of the request body
-      last_name, // Send the 'last_name' state as part of the request body
+      ...formData // Spread the formData object to include its individual fields in the request body
     });
 
     // Clear the form inputs after submission
-    setfirst_name(""); // Reset the 'first_name' state to an empty string
-    setlast_name(""); // Reset the 'last_name' state to an empty string
-    refresh(); // Call the refresh function to trigger a re-render or fetch updated data
+    setFormData(sqlCols.reduce((acc, field) => ({ ...acc, [field]: "" }), {}));
+    refresh();
+    if (inputRef.current) inputRef.current.focus();
   };
   const handleKeyDown = (event) => {
     // Check if Enter key is pressed (keyCode 13 or 'Enter')
@@ -35,25 +35,25 @@ const ContactForm = () => {
         inputRef.current.focus();
       }
     }
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
   // Render the form UI
   return (
-    <form onSubmit={handleSubmit}> {/* Attach the handleSubmit function to the form's onSubmit event */}
-      <input
-        ref={inputRef}
-        placeholder="first_name" // Placeholder text for the first_name input
-        value={first_name} // Bind the input value to the 'first_name' state
-        onChange={(e) => setfirst_name(e.target.value)} // Update the 'first_name' state when the input changes
-        required // Make the input field required
-      />
-      <input
-        onKeyDown={handleKeyDown}
-        placeholder="last_name" // Placeholder text for the last_name input
-        value={last_name} // Bind the input value to the 'last_name' state
-        onChange={(e) => setlast_name(e.target.value)} // Update the 'last_name' state when the input changes
-        required // Make the input field required
-      />
-      <button type="submit">Ok</button> {/* Submit button to trigger form submission */}
+    <form onSubmit={handleSubmit} display="flex" justify-content="space-between" gap="10px">
+      {sqlCols.map((field, index) => (field == "id" ? null : // Skip rendering the 'id' field
+        <input
+          key={field}
+          name={field}
+          placeholder={field}
+          value={formData[field]}
+          onChange={handleChange}
+          onKeyDown={index === sqlCols.length - 1 ? handleKeyDown : undefined}
+          ref={index === 0 ? inputRef : null}
+          required = {(field === "first_name" || field === "last_name") ? 'required' : undefined }
+        />
+      ))}
+      <button type="submit">Ok</button>
     </form>
   );
 };

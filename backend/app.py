@@ -44,8 +44,6 @@ def get_Columns():
 @app.route("/contacts", methods=["POST"])
 def add_contact():
     data = request.get_json()
-    if "first_name" not in data or "last_name" not in data:
-        return jsonify({"error": "Missing required fields"}), 400
     MyOwnSQL.add_Contact(data)
     return jsonify({"message": "Contact added"}), 201
 #----------------------------------------

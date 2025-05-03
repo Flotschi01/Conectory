@@ -90,16 +90,23 @@ class SQLManager:
             print(f"Error: {e} on line {line_number}.")
             return []
     def add_Contact(self, data):
+        print(f"Adding contact with data: {data}")
         valid_columns = self.get_Columns("contacts")
         help = []
         for col in data:
-            help.append(col)
             if col not in valid_columns:
                 raise ValueError(f"Invalid column name: {col}")
+            elif data[col] != '' and col != "id":
+                help.append(col)
         cursor = self._mysql.connection.cursor()
+        columns = ", ".join(help)
+        theSes = ', '.join(['%s'] * len(help))
+        Data = (data[col] for col in help)
+        print(f"INSERT INTO contacts ({columns}) VALUES ({theSes})",
+            Data)
         cursor.execute(
-            f"INSERT INTO contacts ({", ".join(help)}) VALUES ({', '.join(['%s'] * len(help))})",
-            (val for col, val in data.items())
+            f"INSERT INTO contacts ({columns}) VALUES ({theSes})",
+            Data
         )
         self._mysql.connection.commit()
     def delete_Contact(self, contact_id):
