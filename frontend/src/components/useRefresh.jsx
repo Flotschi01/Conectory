@@ -7,7 +7,7 @@ const RefreshContext = createContext(null);
 // Create the provider
 export const RefreshProvider = ({ children }) => {
   const [refreshCounter, setRefreshCounter] = useState(0);
-  const [sqlCols, setSqlCols] = useState({"error": true});
+  const [sqlCols, setSqlCols] = useState([]);
 
 
 

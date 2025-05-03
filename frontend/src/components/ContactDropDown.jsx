@@ -9,10 +9,10 @@ const ContactDropDown = ({Component, Message = "Toggle Component"}) => {
     setShowComponent(!showComponent);
   };
   return (
-    <div>
-    <button onClick={handleClick}>{Message}</button>
+    <div style={{ display: "flex", flexDirection: "column"}}>
+    <button onClick={handleClick} style={{alignSelf: "flex-end"}}>{Message}</button>
       {showComponent && Component}
-      </div>
+    </div>
   );
 };
 

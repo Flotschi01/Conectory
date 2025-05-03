@@ -6,8 +6,7 @@ import { useRefresh } from "./useRefresh";
 
 // Defining the ContactList functional component
 const ContactList = ({query}) => {
-  const { refreshCounter } = useRefresh();
-  const { getApiUrl } = useRefresh();
+  const { getApiUrl, refreshCounter, sqlCols } = useRefresh();
 
   // State to store the list of contacts, initialized as an empty array
   const [contacts, setContacts] = useState([{
@@ -25,9 +24,10 @@ const ContactList = ({query}) => {
 
   const fetchSql = async () => {
     try {
+      console.log("Columns: " + sqlCols)
       const response = await axios.get(getApiUrl() + "contacts", {
         params: {
-          sql: query,
+          proj: sqlCols.join(";")
         },
       });
       setContacts(response.data);
@@ -46,30 +46,30 @@ const ContactList = ({query}) => {
   return (
     <div>
       {/* Heading for the contact list */}
-      <h2>All Contacts</h2>
-      
-      <table>
-        <thead>
-          <tr>
-            {Object.keys(contacts[0]).map((key) => <th key={key}>{key}</th>)}
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {/* Iterating over the contacts array to display each contact */}
-          {contacts.map((contact) => (
-            <tr key={contact.id}>
-              {/* Displaying each contact's details in table cells */}
-              {Object.keys(contact).map((key) => (
-                <td key={key}>{contact[key]}</td>
+        <div style={{ maxHeight: "85vh", overflowY: "auto", border: "1px solid #ccc" }}>
+          <table>
+            <thead>
+              <tr>
+                {Object.keys(contacts[0]).map((key) => <th key={key}>{key}</th>)}
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {/* Iterating over the contacts array to display each contact */}
+              {contacts.map((contact) => (
+                <tr key={contact.id}>
+                  {/* Displaying each contact's details in table cells */}
+                  {Object.keys(contact).map((key) => (
+                    <td key={key}>{contact[key]}</td>
+                  ))}
+                  <td>
+                    <DeleteBtn contId={contact.id}  />
+                  </td>
+                </tr>
               ))}
-              <td>
-                <DeleteBtn contId={contact.id}  />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+            </tbody>
+          </table>
+          </div>
     </div>
   );
 };

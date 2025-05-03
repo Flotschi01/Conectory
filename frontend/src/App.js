@@ -16,10 +16,17 @@ function App() {
         <RefreshProvider>
         <section>
           <div style={{display: "flex", justifyContent: "space-between"}}>
-            <h2>Contact List</h2>          
+            <h2>Contact List</h2>   
+            <Search />       
             <ContactDropDown Component={<ContactForm />} Message="Add Contact" />
+
           </div>
-          <Search />
+        </section>
+        <section>
+          <h2>
+            Table:
+          </h2>
+          <ContactList/>
         </section>
         </RefreshProvider>
       </main>
