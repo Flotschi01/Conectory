@@ -5,8 +5,8 @@ import DeleteBtn from "./DeleteBtn"; // Importing the DeleteBtn component for de
 import { useRefresh } from "./useRefresh";
 
 // Defining the ContactList functional component
-const ContactList = ({query}) => {
-  const { getApiUrl, refreshCounter, sqlCols } = useRefresh();
+const ContactList = () => {
+  const { getApiUrl, refreshCounter, sqlCols, selection } = useRefresh();
 
   // State to store the list of contacts, initialized as an empty array
   const [contacts, setContacts] = useState([{
@@ -27,7 +27,8 @@ const ContactList = ({query}) => {
       console.log("Columns: " + sqlCols)
       const response = await axios.get(getApiUrl() + "contacts", {
         params: {
-          proj: sqlCols.join(";")
+          proj: sqlCols.join(";"),
+          sel: selection.join(";")
         },
       });
       setContacts(response.data);

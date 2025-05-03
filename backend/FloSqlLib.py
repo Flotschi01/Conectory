@@ -73,6 +73,8 @@ class SQLManager:
                         
             # Execute the query with parameters (prevents SQL injection)
             cursor.execute(sql_query, params)
+            print(f"Contacts: {(sql_query, params)}")
+
             rows = cursor.fetchall()
             
             contacts = []
@@ -81,7 +83,9 @@ class SQLManager:
                 for index, col in enumerate(projection):
                     temp[col] = row[index]
                 contacts.append(temp)
-                
+            if len(contacts) == 0:
+                print("No contacts found.")
+                return [{'id': -1, 'first_name': 'no one', 'last_name': 'found'}]
             return contacts
         
         except Exception as e:
@@ -89,6 +93,7 @@ class SQLManager:
             line_number = traceback.extract_tb(exc_traceback)[-1].lineno
             print(f"Error: {e} on line {line_number}.")
             return []
+        
     def add_Contact(self, data):
         print(f"Adding contact with data: {data}")
         valid_columns = self.get_Columns("contacts")
