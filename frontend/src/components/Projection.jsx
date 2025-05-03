@@ -5,10 +5,12 @@ import { useEffect } from "react";
 
 const ProjSelecter = ({t_name}) => {
 const { getApiUrl } = useRefresh();
-const { refresh } = useRefresh();
+const { refresh, setColumns } = useRefresh();
 
-const [Columns, setColumns] = useState(["id"]);
+const [SQLColumns, SQLsetColumns] = useState(["id"]);
 // 
+const ItemRefs = {
+  };
 const getColumns = async () => {
     try {
         const response = await axios.get(getApiUrl() + "getColumns", {
@@ -17,11 +19,22 @@ const getColumns = async () => {
             },
         });
         console.log("Columns:", response.data);
-        setColumns(response.data);
+        SQLsetColumns(response.data);
     } catch (error) {
         console.error("Error fetching SQL:", error);
     }
     refresh(); // Call the refresh function to trigger a re-render
+}
+const handleSet = () => {
+    try{    let help = {};
+    SQLColumns.forEach(col => {
+        help[col] = ItemRefs[col].current;
+        console.log("col:" + col + " checked:" + help[col]);
+    });}
+    catch (error) {
+        console.error("Error fetching SQL:", error);
+    }
+
 }
   useEffect(() => {
     getColumns();
@@ -32,17 +45,18 @@ return (
     <div>
         <h5>select columns</h5>
     <ul>
-        {Columns.map((column) => (
-            <Item key={column} name={column} />
+        {SQLColumns.map((column) => (
+            ItemRefs[column] = React.createRef(),
+            <Item className={"projSelecterListElement"} key={column} name={column} handleSet={handleSet} ref={ItemRefs[column]}/>
         ))}
     </ul>
     </div>
 
 );
 };
-const Item = ({ name }) => {
+const Item = ({ name, handleSet, checked }) => {
     return (
-        <li><span>{name}</span><input type="checkbox" defaultChecked></input></li>
+        <li><span>{name}</span><input type="checkbox" defaultChecked onClick={handleSet} checked={checked}></input></li>
     )
 }
 

@@ -7,6 +7,9 @@ const RefreshContext = createContext(null);
 // Create the provider
 export const RefreshProvider = ({ children }) => {
   const [refreshCounter, setRefreshCounter] = useState(0);
+  const [sqlCols, setSqlCols] = useState({"error": true});
+
+
 
   const refresh = useCallback(() => {
     setRefreshCounter((prev) => prev + 1);
@@ -18,7 +21,7 @@ export const RefreshProvider = ({ children }) => {
   }, []);
 
   return (
-    <RefreshContext.Provider value={{ refreshCounter, refresh, getApiUrl }}>
+    <RefreshContext.Provider value={{ refreshCounter, refresh, getApiUrl, sqlCols, setSqlCols }}>
       {children}
     </RefreshContext.Provider>
   );
