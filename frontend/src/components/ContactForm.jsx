@@ -40,20 +40,34 @@ const ContactForm = () => {
   };
   // Render the form UI
   return (
-    <form onSubmit={handleSubmit} display="flex" justify-content="space-between" gap="10px">
-      {sqlCols.map((field, index) => (field == "id" ? null : // Skip rendering the 'id' field
-        <input
-          key={field}
-          name={field}
-          placeholder={field}
-          value={formData[field]}
-          onChange={handleChange}
-          onKeyDown={index === sqlCols.length - 1 ? handleKeyDown : undefined}
-          ref={index === 0 ? inputRef : null}
-          required = {(field === "first_name" || field === "last_name") ? 'required' : undefined }
-        />
-      ))}
-      <button type="submit">Ok</button>
+    <form onSubmit={handleSubmit} display="flex" justify-content="space-between">
+      <table>
+        <thead>
+          <tr>
+            {sqlCols.map((key) => (key == "id" ? null :<th key={key}>{key}</th>))}
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            {sqlCols.map((field, index) => (field == "id" ? null : // Skip rendering the 'id' field
+              <td><input
+                key={field}
+                name={field}
+                placeholder={field}
+                value={formData[field]}
+                onChange={handleChange}
+                onKeyDown={index === sqlCols.length - 1 ? handleKeyDown : undefined}
+                ref={index === 0 ? inputRef : null}
+                required = {(field === "first_name" || field === "last_name") ? 'required' : undefined }
+              />
+              </td>
+            ))}
+            <td><button type="submit">Add</button></td>
+        </tr>
+      </tbody>
+      </table>
+
     </form>
   );
 };

@@ -57,5 +57,9 @@ def delete_contact(contact_id):
     MyOwnSQL.delete_Contact(contact_id)
     return jsonify({"message": "Contact deleted"}), 200
 
+@app.route("/contacts/update/<int:ucontact_id>", methods=["POST"])
+def update_Contact(ucontact_id):
+    MyOwnSQL.update_Contact(ucontact_id, request.get_json())
+    return jsonify({"message": "Updated Contact:" + ucontact_id}), 200
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)  # Run the app on all interfaces and port 5000

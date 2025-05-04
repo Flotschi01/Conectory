@@ -18,14 +18,13 @@ function App() {
         <h2>Contact List</h2>   
           <div style={{display: "flex", justifyContent: "space-between"}}>
             <Search/>       
-            <ContactDropDown Component={<ContactForm />} Message="Add Contact" />
-
           </div>
         </section>
         <section>
           <h2>
             Table:
           </h2>
+          <ContactForm/>
           <ContactList/>
         </section>
         </RefreshProvider>

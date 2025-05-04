@@ -118,5 +118,28 @@ class SQLManager:
         cursor = self._mysql.connection.cursor()
         cursor.execute("DELETE FROM contacts WHERE id = %s", (contact_id,))
         self._mysql.connection.commit()
+
+    def update_Contact(self, contact_id, data):
+        print(f"Updataing contact {contact_id} with data: {data}")
+        valid_columns = self.get_Columns("contacts")
+        help = []
+        for col in data:
+            if col not in valid_columns:
+                raise ValueError(f"Invalid column name: {col}")
+            elif data[col] != '' and col != "id":
+                help.append(col)
+        cursor = self._mysql.connection.cursor()
+        columns = ", ".join(help)
+        theSes = ', '.join(['%s'] * len(help))
+        Data = (data[col] for col in help)
+
+        set_clause = ", ".join([f"{col} = %s" for col in help])
+
+        print(f"UPDATE contacts SET {set_clause} WHERE id = %s", Data)
+        cursor.execute(
+            f"UPDATE contacts SET {set_clause} WHERE id = %s",
+            (Data, contact_id)  # Unpack Data into the query
+        )
+        self._mysql.connection.commit()
 if __name__ == "__main__":
     main()

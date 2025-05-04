@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import DeleteBtn from "./DeleteBtn"; // Importing the DeleteBtn component for deleting contacts
 import { useRefresh } from "./useRefresh";
+import UpdateButton from "./UpdateButton";
 
 // Defining the ContactList functional component
 const ContactList = () => {
@@ -45,9 +46,7 @@ const ContactList = () => {
 
   // Rendering the component's UI
   return (
-    <div>
-      {/* Heading for the contact list */}
-        <div style={{ maxHeight: "85vh", overflowY: "auto", border: "1px solid #ccc" }}>
+        <div style={{ maxHeight: "65vh", overflowY: "auto", border: "1px solid #ccc" }}>
           <table>
             <thead>
               <tr>
@@ -65,13 +64,13 @@ const ContactList = () => {
                   ))}
                   <td>
                     <DeleteBtn contId={contact.id}  />
+                    <UpdateButton contId={contact.id} />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          </div>
-    </div>
+        </div> 
   );
 };
 
