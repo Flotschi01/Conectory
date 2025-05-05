@@ -17,7 +17,6 @@ const getColumns = async () => {
                 table_name: t_name,
             },
         });
-        console.log("Columns:", response.data);
         SQLsetColumns(response.data);
         setSqlCols(response.data);
     } catch (error) {
@@ -37,7 +36,6 @@ const toggle = (col) => {
 
   useEffect(() => {
     getColumns();
-    console.log("address:" + getApiUrl());
   }, []); // Empty dependency array ensures this runs only once
 
 return (

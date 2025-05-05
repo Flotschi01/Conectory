@@ -17,7 +17,6 @@ const ContactList = () => {
     "last_name": "error"
   },]);
   useEffect(() => {
-    console.log("Display refreshed! Counter:", refreshCounter);
     // Fetch data or do whatever refresh action you need here
     fetchSql(); // Call the function to fetch data when refreshCounter changes
   }, [refreshCounter]);
@@ -25,7 +24,6 @@ const ContactList = () => {
 
   const fetchSql = async () => {
     try {
-      console.log("Columns: " + sqlCols)
       const response = await axios.get(getApiUrl() + "contacts", {
         params: {
           proj: sqlCols.join(";"),
