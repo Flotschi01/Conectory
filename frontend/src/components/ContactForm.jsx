@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from "react"; // Import React and the useState hook for managing component state
 import axios from "axios"; // Import axios for making HTTP requests
-import { useRefresh } from "./useRefresh";
+import { useRefresh } from "./Wrapper";
 
 // Define the ContactForm functional component
-const ContactForm = () => {
+const ContactForm = ({table_name}) => {
   const { refresh, getApiUrl, sqlCols } = useRefresh();
   const { updateID, setUpdateID } = useRefresh();
   const inputRef = useRef([]);
@@ -14,7 +14,7 @@ const ContactForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent the default form submission behavior (page reload)
     // Send a POST request to the server with the form data
-    await axios.post(getApiUrl() + "contacts", {
+    await axios.post(getApiUrl() + table_name, {
       ...formData // Spread the formData object to include its individual fields in the request body
     });
 
@@ -26,7 +26,7 @@ const ContactForm = () => {
   const handleUpdate = async (e) => {
     e.preventDefault(); // Prevent the default form submission behavior (page reload)
     // Send a POST request to the server with the form data
-    await axios.post(getApiUrl() + "contacts/update/" + updateID, {
+    await axios.post(getApiUrl() + table_name + "/update/" + updateID, {
       ...formData // Spread the formData object to include its individual fields in the request body
     });
     setUpdateID(-1); // Reset the update ID to -1 after updating
@@ -55,7 +55,7 @@ const ContactForm = () => {
     try {
       setFormData(sqlCols.reduce((acc, field) => ({ ...acc, [field]: "" }), {}));
       console.log("Hello: " + id)
-      const response = await axios.get(getApiUrl() + "contacts", {
+      const response = await axios.get(getApiUrl() + table_name, {
         params: {
           proj: sqlCols.join(";"),
           sel: "id = " + id
@@ -76,7 +76,7 @@ const ContactForm = () => {
   // Render the form UI
   return (
     <form onSubmit={updateID == -1 ? handleSubmit : handleUpdate}
-    display="flex" justify-content="space-between">
+      style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", width: "100%" }}>
       <table>
         <thead>
           <tr>

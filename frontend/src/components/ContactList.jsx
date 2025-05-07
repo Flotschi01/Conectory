@@ -2,19 +2,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import DeleteBtn from "./DeleteBtn"; // Importing the DeleteBtn component for deleting contacts
-import { useRefresh } from "./useRefresh";
+import { useRefresh } from "./Wrapper";
 import UpdateButton from "./UpdateButton";
 
 // Defining the ContactList functional component
-const ContactList = () => {
+const TableList = ({table_name}) => {
   const { getApiUrl, refreshCounter, sqlCols, selection } = useRefresh();
 
   // State to store the list of contacts, initialized as an empty array
-  const [contacts, setContacts] = useState([{
-    "created_at": "error",
-    "first_name": "error",
-    "id": 0,
-    "last_name": "error"
+  const [rows, setRows] = useState([{
+    "error": "No data available"
   },]);
   useEffect(() => {
     // Fetch data or do whatever refresh action you need here
@@ -24,13 +21,13 @@ const ContactList = () => {
 
   const fetchSql = async () => {
     try {
-      const response = await axios.get(getApiUrl() + "contacts", {
+      const response = await axios.get(getApiUrl() + table_name, {
         params: {
           proj: sqlCols.join(";"),
           sel: selection.join(";")
         },
       });
-      setContacts(response.data);
+      setRows(response.data);
     } catch (error) {
       console.error("Error fetching SQL:", error);
     }
@@ -48,17 +45,17 @@ const ContactList = () => {
           <table>
             <thead>
               <tr>
-                {Object.keys(contacts[0]).map((key) => <th key={key}>{key}</th>)}
+                {Object.keys(rows[0]).map((key) => <th key={key}>{key}</th>)}
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {/* Iterating over the contacts array to display each contact */}
-              {contacts.map((contact) => (
+              {rows.map((contact) => (
                 <tr key={contact.id}>
                   {/* Displaying each contact's details in table cells */}
                   {Object.keys(contact).map((key) => (
-                    <td key={key}>{contact[key]}</td>
+                    <td key={contact.id + "-" + key}>{contact[key]}</td>
                   ))}
                   <td>
                     <DeleteBtn contId={contact.id}  />
@@ -73,4 +70,4 @@ const ContactList = () => {
 };
 
 // Exporting the ContactList component as the default export
-export default ContactList;
+export default TableList;

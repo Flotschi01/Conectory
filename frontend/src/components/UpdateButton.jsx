@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import { useRefresh } from "./useRefresh";
+import { useRefresh } from "./Wrapper";
 
 const UpdateButton = ({ contId }) => {
   const { setUpdateID } = useRefresh();

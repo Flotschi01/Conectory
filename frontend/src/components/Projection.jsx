@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useRefresh } from "./useRefresh";
+import { useRefresh } from "./Wrapper";
 import { useEffect } from "react";
 
-const ProjSelecter = ({t_name}) => {
+const ProjSelecter = ({table_name}) => {
 const { getApiUrl } = useRefresh();
 const { refresh, sqlCols, setSqlCols } = useRefresh();
 
@@ -12,11 +12,13 @@ const [SQLColumns, SQLsetColumns] = useState(["id"]);
  
 const getColumns = async () => {
     try {
+        let help = table_name;
         const response = await axios.get(getApiUrl() + "getColumns", {
             params: {
-                table_name: t_name,
+                table_name: help,
             },
         });
+        console.log("SQL Columns: ", response.data);
         SQLsetColumns(response.data);
         setSqlCols(response.data);
     } catch (error) {

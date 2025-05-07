@@ -1,11 +1,13 @@
 // useRefresh.js
-import React, { createContext, useContext, useState, useCallback } from "react";
-
+import React, { createContext, useCallback, useContext, useState } from "react";
+import ContactForm from "./ContactForm";
+import TableList from "./ContactList";
+import Search from "./Search";
 // Create the context
 const RefreshContext = createContext(null);
 
 // Create the provider
-export const RefreshProvider = ({ children }) => {
+export const Wrapper = ({  table_name }) => {
   const [refreshCounter, setRefreshCounter] = useState(0);
   const [sqlCols, setSqlCols] = useState([]);
   const [selection, setSelection] = useState([]);
@@ -23,7 +25,19 @@ export const RefreshProvider = ({ children }) => {
 
   return (
     <RefreshContext.Provider value={{ refreshCounter, refresh, getApiUrl, sqlCols, setSqlCols, selection, setSelection, updateID, setUpdateID }}>
-      {children}
+      <section>
+        <h1>{table_name.charAt(0).toUpperCase() + table_name.slice(1)} List</h1>   
+          <div style={{display: "flex", justifyContent: "space-between"}}>
+            <Search table_name={table_name}/>       
+          </div>
+        </section>
+        <section>
+          <h2>
+            Table:
+          </h2>
+          <ContactForm table_name={table_name}/>
+          <TableList table_name={table_name}/>
+        </section>
     </RefreshContext.Provider>
   );
 };

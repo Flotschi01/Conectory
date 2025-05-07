@@ -1,10 +1,10 @@
 import React from "react";
 import "./App.css"; // Importing CSS styles for the app
-import ContactList from "./components/ContactList";
+import TableList from "./components/ContactList";
 import ContactForm from "./components/ContactForm";
 import ContactDropDown from "./components/ContactDropDown"; // Importing the ContactDropDown component
 import Search from "./components/Search";
-import { RefreshProvider } from "./components/useRefresh"; // Importing the useRefresh custom hook
+import { Wrapper } from "./components/Wrapper"; // Importing the useRefresh custom hook
 function App() {
 
   return (
@@ -13,21 +13,10 @@ function App() {
         <h1>Contact Manager</h1>
       </header>
       <main>
-        <RefreshProvider>
-        <section>
-        <h2>Contact List</h2>   
-          <div style={{display: "flex", justifyContent: "space-between"}}>
-            <Search/>       
-          </div>
-        </section>
-        <section>
-          <h2>
-            Table:
-          </h2>
-          <ContactForm/>
-          <ContactList/>
-        </section>
-        </RefreshProvider>
+        <Wrapper table_name={"contacts"}>
+        </Wrapper>
+        <Wrapper table_name={"relations"}>
+        </Wrapper>
       </main>
       <footer>
         <p>&copy; 2025 Flotschi</p>

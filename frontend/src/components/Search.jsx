@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import ContactList from "./ContactList";
-import { useRefresh } from "./useRefresh";
+import TableList from "./ContactList";
+import { useRefresh } from "./Wrapper";
 import ProjSelecter from "./Projection";
 
-const Search = ({ contId, onDelete, Component}) => {
+const Search = ({table_name}) => {
   const { refresh, setSelection } = useRefresh();
 
   const handleSubmit = (e)  => {
@@ -14,7 +14,7 @@ const Search = ({ contId, onDelete, Component}) => {
 return (
         <form onSubmit={handleSubmit} style={{width: "100%"}}>
             <div style={{display: "flex", justifyContent: "space-between"}}>
-                <ProjSelecter t_name={"contacts"}></ProjSelecter>
+                <ProjSelecter table_name={table_name}></ProjSelecter>
                 <input type="text" placeholder="SQL statement with spaces" name="search" />
             </div>
         <button type="submit">Show</button>

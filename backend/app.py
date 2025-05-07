@@ -16,14 +16,21 @@ MyOwnSQL = SQLManager(app)  # Create a separate instance for MyOwnSQL if needed
 #Get Contacts via SQL
 #----------------------------------------
 @app.route("/contacts", methods=["GET"])
-def get_contacts():
-    projection = request.args.get("proj")
-    selection = request.args.get("sel")
-    if not selection:
-        selection = "*"
-    if not projection:
-        projection = "*"
-    ret = MyOwnSQL.get_Contacts(projection.split(";"), selection.split(";"))
+def get_rows():
+    projection = request.args.get("proj") or "*" # if proj is not defined, use "*"
+    selection = request.args.get("sel") or "*"
+    ret = MyOwnSQL.get_Contacts("contacts",projection.split(";"), selection.split(";"))
+    if ret == "error":
+        return jsonify({"error": "Error in SQL query"}), 400
+    else:
+        return jsonify(ret), 200
+
+
+@app.route("/relations", methods=["GET"])
+def get_rel():
+    projection = request.args.get("proj") or "*" # if proj is not defined, use "*"
+    selection = request.args.get("sel") or "*"
+    ret = MyOwnSQL.get_Contacts("relations",projection.split(";"), selection.split(";"))
     if ret == "error":
         return jsonify({"error": "Error in SQL query"}), 400
     else:
@@ -31,6 +38,7 @@ def get_contacts():
 
 #----------------------------------------
 #Get Columns via SQL
+
 #----------------------------------------
 @app.route("/getColumns", methods=["GET"])
 def get_Columns():

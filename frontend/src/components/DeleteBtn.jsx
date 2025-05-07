@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import { useRefresh } from "./useRefresh";
+import { useRefresh } from "./Wrapper";
 
 const DeleteBtn = ({ contId }) => {
   const { refresh } = useRefresh();

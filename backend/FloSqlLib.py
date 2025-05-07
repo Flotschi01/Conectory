@@ -36,12 +36,12 @@ class SQLManager:
                 print(f"Error: {e}")
                 return []
         
-    def get_Contacts(self, projection, selection):
+    def get_Contacts(self, table_name, projection, selection):
         print(f"Projection: {projection}")
         print(f"Selection: {selection}")
         
         # Ensure that the projection fields are valid column names
-        valid_columns = self.get_Columns("contacts")
+        valid_columns = self.get_Columns(table_name)
         valid_columns.append("*") # List of valid column names for projection
         for col in projection:
             if col not in valid_columns:
@@ -50,9 +50,9 @@ class SQLManager:
         try:
             cursor = self._mysql.connection.cursor()
             if projection == ['*']:
-                projection = self.get_Columns("contacts")
+                projection = self.get_Columns(table_name)
             projstring = ", ".join(projection) 
-            sql_query = f"SELECT {projstring} FROM contacts"
+            sql_query = f"SELECT {projstring} FROM " + str(table_name)
             
             # Handle selection with parameterized queries
             params = []
@@ -86,7 +86,7 @@ class SQLManager:
                 contacts.append(temp)
             if len(contacts) == 0:
                 print("No contacts found.")
-                return [{'id': -1, 'first_name': 'no one', 'last_name': 'found'}]
+                return [{'error': 'No contacts found.'}]
             return contacts
         
         except Exception as e:
