@@ -11,10 +11,6 @@ const ContactForm = () => {
   const [formData, setFormData] = useState(
     sqlCols.reduce((acc, field) => ({ ...acc, [field]: "" }), {})
   );
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent the default form submission behavior (page reload)
     // Send a POST request to the server with the form data
@@ -27,18 +23,6 @@ const ContactForm = () => {
     refresh();
     if (inputRef.current[0]) inputRef.current[0].focus();
   };
-  const handleKeyDown = (event) => {
-    // Check if Enter key is pressed (keyCode 13 or 'Enter')
-    if (event.key === 'Enter') {
-
-      // Reset the focus to the input element
-      if (inputRef.current[0]) {
-        inputRef.current[0].focus();
-      } 
-    }
-    const { name, value } = event.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
   const handleUpdate = async (e) => {
     e.preventDefault(); // Prevent the default form submission behavior (page reload)
     // Send a POST request to the server with the form data
@@ -50,6 +34,23 @@ const ContactForm = () => {
     setFormData(sqlCols.reduce((acc, field) => ({ ...acc, [field]: "" }), {}));
     refresh();
   }
+  const handleKeyDown = (event) => {//reseting the cursor to the first input field only called on the last input field
+    // Check if Enter key is pressed (keyCode 13 or 'Enter')
+    if (event.key === 'Enter') {
+
+      // Reset the focus to the input element
+      if (inputRef.current[0]) {
+        inputRef.current[0].focus();
+      } 
+    }
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+  
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
   const getSingleContact = async (id) => {
     try {
       setFormData(sqlCols.reduce((acc, field) => ({ ...acc, [field]: "" }), {}));
@@ -74,7 +75,8 @@ const ContactForm = () => {
   }, [updateID]); 
   // Render the form UI
   return (
-    <form onSubmit={handleSubmit} display="flex" justify-content="space-between">
+    <form onSubmit={updateID == -1 ? handleSubmit : handleUpdate}
+    display="flex" justify-content="space-between">
       <table>
         <thead>
           <tr>
@@ -99,7 +101,7 @@ const ContactForm = () => {
               />
               </td>
             ))}
-            <td><button type="submit">Add</button><button onClick={handleUpdate}>Update</button></td>
+            <td><button type="submit">Add/Update</button></td>
         </tr>
       </tbody>
       </table>
