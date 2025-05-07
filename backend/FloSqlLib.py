@@ -1,5 +1,6 @@
 import os
 import sys
+from datetime import datetime
 
 from flask_mysqldb import MySQL
 
@@ -120,26 +121,35 @@ class SQLManager:
         self._mysql.connection.commit()
 
     def update_Contact(self, contact_id, data):
-        print(f"Updataing contact {contact_id} with data: {data}")
-        valid_columns = self.get_Columns("contacts")
-        help = []
-        for col in data:
-            if col not in valid_columns:
-                raise ValueError(f"Invalid column name: {col}")
-            elif data[col] != '' and col != "id":
-                help.append(col)
-        cursor = self._mysql.connection.cursor()
-        columns = ", ".join(help)
-        theSes = ', '.join(['%s'] * len(help))
-        Data = (data[col] for col in help)
-
-        set_clause = ", ".join([f"{col} = %s" for col in help])
-
-        print(f"UPDATE contacts SET {set_clause} WHERE id = %s", Data)
-        cursor.execute(
-            f"UPDATE contacts SET {set_clause} WHERE id = %s",
-            (Data, contact_id)  # Unpack Data into the query
-        )
-        self._mysql.connection.commit()
+        try:
+            print(f"Updataing contact {contact_id} with data: {data}")
+            valid_columns = self.get_Columns("contacts")
+            help = []
+            for col in data:
+                if col not in valid_columns:
+                    raise ValueError(f"Invalid column name: {col}")
+                elif col != "id": #data[col] != '' and
+                    if(col == "created_at"):
+                        dt = datetime.strptime(data[col], "%a, %d %b %Y %H:%M:%S GMT")
+                        data[col] = dt.strftime("%Y-%m-%d %H:%M:%S")
+                    help.append(col)
+            cursor = self._mysql.connection.cursor()
+            columns = ", ".join(help)
+            theSes = ', '.join(['%s'] * len(help))
+            Data = (data[col] for col in help)
+            set_clause = ", ".join([f"{col} = %s" for col in help])
+            Data = list(Data) + [contact_id]  # Append contact_id for WHERE clause
+            print(f"UPDATE contacts SET {set_clause} WHERE id = %s",
+                Data)
+            cursor.execute(
+                f"UPDATE contacts SET {set_clause} WHERE id = %s",
+                Data
+            )
+            self._mysql.connection.commit()
+        except Exception as e:
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            line_number = traceback.extract_tb(exc_traceback)[-1].lineno
+            print(f"Error: {e} on line {line_number}.")
+            return []
 if __name__ == "__main__":
     main()

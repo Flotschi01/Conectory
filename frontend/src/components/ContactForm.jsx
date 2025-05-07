@@ -42,7 +42,7 @@ const ContactForm = () => {
   const handleUpdate = async (e) => {
     e.preventDefault(); // Prevent the default form submission behavior (page reload)
     // Send a POST request to the server with the form data
-    await axios.post(getApiUrl() + "contacts/update", {
+    await axios.post(getApiUrl() + "contacts/update/" + updateID, {
       ...formData // Spread the formData object to include its individual fields in the request body
     });
     setUpdateID(-1); // Reset the update ID to -1 after updating

@@ -43,6 +43,7 @@ return (
         <h5>select columns</h5>
     <ul>
         {SQLColumns.map((column) => (
+            column == "id" ? null :
             <Item key={column} name={column} checked={sqlCols.includes(column)} handleSet={() => toggle(column)}/>
         ))}
     </ul>
