@@ -5,46 +5,31 @@ import { useEffect } from "react";
 
 const ProjSelecter = ({table_name}) => {
 const { getApiUrl } = useRefresh();
-const { refresh, sqlCols, setSqlCols } = useRefresh();
+const { refresh, sqlCols, setSqlCols} = useRefresh();
 
-const [SQLColumns, SQLsetColumns] = useState(["id"]);
+const [allSqlCols, SetAllSqlCols] = useState(["id"]);
 // 
  
-const getColumns = async () => {
-    try {
-        let help = table_name;
-        const response = await axios.get(getApiUrl() + "getColumns", {
-            params: {
-                table_name: help,
-            },
-        });
-        console.log("SQL Columns: ", response.data);
-        SQLsetColumns(response.data);
-        setSqlCols(response.data);
-    } catch (error) {
-        console.error("Error fetching SQL:", error);
-    }
-    refresh(); // Call the refresh function to trigger a re-render
-}
 const toggle = (col) => {
     setSqlCols((prev) =>
         prev.includes(col)
           ? prev.filter((f) => f !== col)
           : [...prev, col]
       );
-
+        refresh();
   };
 
 
   useEffect(() => {
-    getColumns();
-  }, []); // Empty dependency array ensures this runs only once
+    if(allSqlCols.length > 1) return; // Prevents infinite loop
+    SetAllSqlCols(sqlCols);
+  }, [sqlCols]); // Empty dependency array ensures this runs only once
 
 return (
     <div>
         <h5>select columns</h5>
     <ul>
-        {SQLColumns.map((column) => (
+        {allSqlCols.map((column) => (
             column == "id" ? null :
             <Item key={column} name={column} checked={sqlCols.includes(column)} handleSet={() => toggle(column)}/>
         ))}

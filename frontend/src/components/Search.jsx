@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import TableList from "./ContactList";
+import TableList from "./TableList";
 import { useRefresh } from "./Wrapper";
 import ProjSelecter from "./Projection";
 

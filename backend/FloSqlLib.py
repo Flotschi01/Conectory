@@ -30,7 +30,11 @@ class SQLManager:
                     WHERE TABLE_NAME = %s
                 """, (table_name,))
                 columns = [row[0] for row in cursor.fetchall()]
+                for col in columns:
+                    if(col.endswith("_h")):#hidden columns
+                        columns.remove(col)
                 cursor.close()
+
                 return columns
             except Exception as e:
                 print(f"Error: {e}")
@@ -103,6 +107,9 @@ class SQLManager:
             if col not in valid_columns:
                 raise ValueError(f"Invalid column name: {col}")
             elif data[col] != '' and col != "id":
+                if(col == "created_at"):
+                        dt = datetime.strptime(data[col], "%a, %d %b %Y %H:%M:%S GMT")
+                        data[col] = dt.strftime("%Y-%m-%d %H:%M:%S")
                 help.append(col)
         cursor = self._mysql.connection.cursor()
         columns = ", ".join(help)

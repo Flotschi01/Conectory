@@ -41,31 +41,34 @@ const TableList = ({table_name}) => {
 
   // Rendering the component's UI
   return (
-        <div style={{ maxHeight: "65vh", overflowY: "auto", border: "1px solid #ccc" }}>
-          <table>
-            <thead>
-              <tr>
-                {Object.keys(rows[0]).map((key) => <th key={key}>{key}</th>)}
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {/* Iterating over the contacts array to display each contact */}
-              {rows.map((contact) => (
-                <tr key={contact.id}>
-                  {/* Displaying each contact's details in table cells */}
-                  {Object.keys(contact).map((key) => (
-                    <td key={contact.id + "-" + key}>{contact[key]}</td>
-                  ))}
-                  <td>
-                    <DeleteBtn contId={contact.id}  />
-                    <UpdateButton contId={contact.id} />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div> 
+    <div style={{ maxHeight: "65vh", overflowY: "auto", border: "1px solid #ccc"}}>
+  <table>
+    <thead>
+      <tr>
+        <th key={"id"} className="sticky-header">ID</th>
+        {Object.keys(rows[0]).map((key) => (key != "id" ?
+          <th key={key} className="sticky-header">{key}</th> : null
+        ))}
+        <th className="sticky-header">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map((contact) => (
+        <tr key={contact.id + "-row"}>
+          <td key={contact.id + "-" + "id"}>{contact["id"]}</td>
+          {Object.keys(contact).map((key) => (key != "id" ?
+            <td key={contact.id + "-" + key}>{contact[key]}</td>:null
+          ))}
+          <td>
+            <DeleteBtn contId={contact.id} />
+            <UpdateButton contId={contact.id} />
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
   );
 };
 

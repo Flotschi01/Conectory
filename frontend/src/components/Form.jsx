@@ -54,7 +54,6 @@ const ContactForm = ({table_name}) => {
   const getSingleContact = async (id) => {
     try {
       setFormData(sqlCols.reduce((acc, field) => ({ ...acc, [field]: "" }), {}));
-      console.log("Hello: " + id)
       const response = await axios.get(getApiUrl() + table_name, {
         params: {
           proj: sqlCols.join(";"),
@@ -62,7 +61,6 @@ const ContactForm = ({table_name}) => {
         },
       });
       setFormData(response.data[0]); // Set the form data with the fetched contact data
-      console.log("data: " + response.data[0])
 
     } catch (error) {
       console.error("Error fetching contact:", error);
@@ -75,8 +73,8 @@ const ContactForm = ({table_name}) => {
   }, [updateID]); 
   // Render the form UI
   return (
-    <form onSubmit={updateID == -1 ? handleSubmit : handleUpdate}
-      style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", width: "100%" }}>
+    <div>
+    <form onSubmit={updateID == -1 ? handleSubmit : handleUpdate}>
       <table>
         <thead>
           <tr>
@@ -90,10 +88,11 @@ const ContactForm = ({table_name}) => {
             <td>{updateID == -1 ? "/" : updateID}</td>
             {sqlCols.map((field, index) => (field == "id" ? null : // Skip rendering the 'id' field
               <td key={field}><input
+                style={{width: 100 / (sqlCols.length + (table_name=="contacts" ? 2 : 3)) + "vw"}}
                 key={field}
                 name={field}
                 placeholder={field}
-                value={formData[field]}
+                value={formData[field] ? formData[field] : ""}
                 onChange={handleChange}
                 onKeyDown={index === sqlCols.length - 1 ? handleKeyDown : undefined}
                 ref={inputRef[index]}
@@ -105,8 +104,8 @@ const ContactForm = ({table_name}) => {
         </tr>
       </tbody>
       </table>
-
     </form>
+    </div>
   );
 };
 
