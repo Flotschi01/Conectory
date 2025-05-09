@@ -17,35 +17,52 @@ class SQLManager:
             print (f"Configuring {key} with value: {value}")
         self._mysql = MySQL(app)
         self._ContactColumns = "error"
+        self._RelationColumns = "error"
 
     def get_Columns(self, table_name):
-        if(self._ContactColumns != "error" and table_name == "contacts"):
+        # Return cached result if it's already loaded and table is 'contacts'
+        if self._ContactColumns != "error" and table_name == "contacts":
             return self._ContactColumns
-        else:
-            try:
-                cursor = self._mysql.connection.cursor()
-                cursor.execute("""
-                    SELECT COLUMN_NAME 
-                    FROM INFORMATION_SCHEMA.COLUMNS 
-                    WHERE TABLE_NAME = %s
-                """, (table_name,))
-                columns = [row[0] for row in cursor.fetchall()]
-                for col in columns:
-                    if(col.endswith("_h")):#hidden columns
-                        columns.remove(col)
-                cursor.close()
+        if self._RelationColumns != "error" and table_name == "relations":
+            return self._RelationColumns
 
-                return columns
-            except Exception as e:
-                print(f"Error: {e}")
-                return []
-        
-    def get_Contacts(self, table_name, projection, selection):
+        try:
+            cursor = self._mysql.connection.cursor()
+
+            # Fetch column name and full type
+            cursor.execute("""
+                SELECT COLUMN_NAME, COLUMN_TYPE
+                FROM INFORMATION_SCHEMA.COLUMNS 
+                WHERE TABLE_NAME = %s
+            """, (table_name,))
+            
+            results = cursor.fetchall()
+            cursor.close()
+
+            # Build dictionary while skipping hidden columns
+            columns = {
+                col_name: col_type  
+                for col_name, col_type in results
+                if not col_name.endswith("_h")
+            }
+
+            # Optionally cache for contacts table
+            if table_name == "contacts":
+                self._ContactColumns = columns
+            if table_name == "relations":
+                self._RelationColumns = columns
+            return columns
+
+        except Exception as e:
+            print(f"Error: {e}")
+            return {}
+
+    def get_Rows(self, table_name, projection, selection):
         print(f"Projection: {projection}")
         print(f"Selection: {selection}")
         
         # Ensure that the projection fields are valid column names
-        valid_columns = self.get_Columns(table_name)
+        valid_columns = list(self.get_Columns(table_name).keys())
         valid_columns.append("*") # List of valid column names for projection
         for col in projection:
             if col not in valid_columns:
@@ -54,7 +71,7 @@ class SQLManager:
         try:
             cursor = self._mysql.connection.cursor()
             if projection == ['*']:
-                projection = self.get_Columns(table_name)
+                projection = list(self.get_Columns(table_name).keys())
             projstring = ", ".join(projection) 
             sql_query = f"SELECT {projstring} FROM " + str(table_name)
             
@@ -99,10 +116,10 @@ class SQLManager:
             print(f"Error: {e} on line {line_number}.")
             return []
         
-    def add_Contact(self, data):
-        print(f"Adding contact with data: {data}")
-        valid_columns = self.get_Columns("contacts")
-        help = []
+    def add_Contact(self, table_name, data):
+        print(f"Adding {table_name} with data: {data}")
+        valid_columns = list(self.get_Columns(table_name).keys())
+        columnsToAdd = []
         for col in data:
             if col not in valid_columns:
                 raise ValueError(f"Invalid column name: {col}")
@@ -110,39 +127,41 @@ class SQLManager:
                 if(col == "created_at"):
                         dt = datetime.strptime(data[col], "%a, %d %b %Y %H:%M:%S GMT")
                         data[col] = dt.strftime("%Y-%m-%d %H:%M:%S")
-                help.append(col)
+                columnsToAdd.append(col)
         cursor = self._mysql.connection.cursor()
-        columns = ", ".join(help)
-        theSes = ', '.join(['%s'] * len(help))
-        Data = (data[col] for col in help)
-        print(f"INSERT INTO contacts ({columns}) VALUES ({theSes})",
-            Data)
+        columns = ", ".join(columnsToAdd)
+        theSes = ', '.join(['%s'] * len(columnsToAdd))
+        Data = list(data[col] for col in columnsToAdd)
+        #Data = list(Data).insert(0, table_name)
+        print(f"INSERT INTO {table_name} ({columns}) VALUES ({theSes})")
+        for val in Data:
+            print(f"Data:  {val}")
+
         cursor.execute(
-            f"INSERT INTO contacts ({columns}) VALUES ({theSes})",
+            f"INSERT INTO {table_name} ({columns}) VALUES ({theSes})",
             Data
         )
         self._mysql.connection.commit()
-    def delete_Contact(self, contact_id):
+
+
+    def delete_Contact(self, table_name, contact_id):
         cursor = self._mysql.connection.cursor()
-        cursor.execute("DELETE FROM contacts WHERE id = %s", (contact_id,))
+        cursor.execute(f"DELETE FROM {table_name} WHERE id = %s", (contact_id,))
         self._mysql.connection.commit()
 
-    def update_Contact(self, contact_id, data):
+    def update_Contact(self, table_name, contact_id, data):
         try:
-            print(f"Updataing contact {contact_id} with data: {data}")
-            valid_columns = self.get_Columns("contacts")
+            print(f"Updataing {table_name} {contact_id} with data: {data}")
+            valid_columns = list(self.get_Columns(table_name).keys())
             help = []
             for col in data:
                 if col not in valid_columns:
                     raise ValueError(f"Invalid column name: {col}")
                 elif col != "id": #data[col] != '' and
                     if(col == "created_at"):
-                        dt = datetime.strptime(data[col], "%a, %d %b %Y %H:%M:%S GMT")
-                        data[col] = dt.strftime("%Y-%m-%d %H:%M:%S")
+                        data[col] = datetime.strptime(data[col], "%a, %d %b %Y %H:%M:%S GMT").date()
                     help.append(col)
             cursor = self._mysql.connection.cursor()
-            columns = ", ".join(help)
-            theSes = ', '.join(['%s'] * len(help))
             Data = (data[col] for col in help)
             set_clause = ", ".join([f"{col} = %s" for col in help])
             Data = list(Data) + [contact_id]  # Append contact_id for WHERE clause

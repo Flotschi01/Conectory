@@ -1,11 +1,14 @@
 import React, { useState, useRef, useEffect } from "react"; // Import React and the useState hook for managing component state
 import axios from "axios"; // Import axios for making HTTP requests
 import { useRefresh } from "./Wrapper";
-
+import DropDown from "./DropDown";
+import EnumPicker from "./EmumPicker";
 // Define the ContactForm functional component
 const ContactForm = ({table_name}) => {
   const { refresh, getApiUrl, sqlCols } = useRefresh();
   const { updateID, setUpdateID } = useRefresh();
+  const { types } = useRefresh();
+
   const inputRef = useRef([]);
 
   const [formData, setFormData] = useState(
@@ -73,7 +76,7 @@ const ContactForm = ({table_name}) => {
   }, [updateID]); 
   // Render the form UI
   return (
-    <div>
+    <div style={{ maxWidth: "95vw", overflowX: "auto", overflowY: "visible", border: "1px solid #ccc", position: "relative"}}>
     <form onSubmit={updateID == -1 ? handleSubmit : handleUpdate}>
       <table>
         <thead>
@@ -87,12 +90,21 @@ const ContactForm = ({table_name}) => {
           <tr>
             <td>{updateID == -1 ? "/" : updateID}</td>
             {sqlCols.map((field, index) => (field == "id" ? null : // Skip rendering the 'id' field
+              field.endsWith("_e") ? 
+              <td key={field}><EnumPicker 
+              name={field}
+              value={formData[field] ? formData[field] : ""}
+              onChange={handleChange} 
+              options={types[field].match(/'([^']+)'/g).map(s => s.replace(/'/g, ''))}//complex to convert enum('option1','option2') to
+               /></td>//array ['option1','option2']
+              :
               <td key={field}><input
                 style={{width: 100 / (sqlCols.length + (table_name=="contacts" ? 2 : 3)) + "vw"}}
                 key={field}
+                type={types[field] == "date" ? "date" : "text"}
                 name={field}
                 placeholder={field}
-                value={formData[field] ? formData[field] : ""}
+                value={formData[field] ? types[field] == "date" ? convertTime(formData[field]): formData[field] : ""}
                 onChange={handleChange}
                 onKeyDown={index === sqlCols.length - 1 ? handleKeyDown : undefined}
                 ref={inputRef[index]}
@@ -109,6 +121,13 @@ const ContactForm = ({table_name}) => {
   );
 };
 
-
+function convertTime(param){
+  if(!param)
+    return "";
+  const date = new Date(param);
+  let help = date.toISOString().split('T')[0];
+  //let help = `${date.getFullYear()}-${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+  return help;
+}
 
 export default ContactForm;

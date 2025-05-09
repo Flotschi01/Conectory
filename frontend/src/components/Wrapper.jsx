@@ -12,7 +12,7 @@ export const Wrapper = ({  table_name }) => {
   const [refreshCounter, setRefreshCounter] = useState(0);
   const [sqlCols, setSqlCols] = useState([]);
   const [selection, setSelection] = useState([]);
-
+  const [types, setTypes] = useState({});
   const [updateID, setUpdateID] = useState(-1);
 
   const refresh = useCallback(() => {
@@ -30,7 +30,8 @@ export const Wrapper = ({  table_name }) => {
                 table_name: table_name,
             },
         });
-        setSqlCols(response.data);
+        setSqlCols(Object.keys(response.data));
+        setTypes(response.data)
     } catch (error) {
         console.error("Error fetching SQL:", error);
     }}
@@ -38,7 +39,8 @@ useEffect(() => {
     getColumns();
   }, []); // Initialize sqlCols with "id" when the component mounts
   return (
-    <RefreshContext.Provider value={{ refreshCounter, refresh, getApiUrl, sqlCols, setSqlCols, selection, setSelection, updateID, setUpdateID }}>
+    <RefreshContext.Provider value={{ refreshCounter, refresh, getApiUrl, 
+    sqlCols, setSqlCols, selection, setSelection, updateID, setUpdateID, types }}>
       <div style={table_name == "contacts" ? {backgroundColor: "#F4F0FA"} : 
                                              {backgroundColor: "#E6FAF9"}} id ="wrapper">
           <section>

@@ -63,6 +63,7 @@ form {
 }
 
 input {
+  width: auto;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -111,3 +112,47 @@ th.sticky-header{
 tr:hover {
   background-color: #f9f9f9;
 }
+/*--------------------------------------------
+ENUM PICKER
+----------------------------------------------*/
+.enum-picker {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.picker-display {
+  padding: 6px 12px;
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.picker-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: white;
+  border: 1px solid #ccc;
+  z-index: 9999; /* ensures it's above the table */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  list-style: none;
+  margin: 4px 0 0 0;
+  padding: 0;
+}
+
+.picker-options li {
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.picker-options li:hover,
+.picker-options .selected {
+  background-color: #4b0082;
+  color: white;
+}
+/*--------------------------------------------
+ENUM PICKER  END
+----------------------------------------------*/

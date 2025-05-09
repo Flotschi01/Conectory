@@ -7,7 +7,7 @@ import UpdateButton from "./UpdateButton";
 
 // Defining the ContactList functional component
 const TableList = ({table_name}) => {
-  const { getApiUrl, refreshCounter, sqlCols, selection } = useRefresh();
+  const { getApiUrl, refreshCounter, sqlCols, selection, types } = useRefresh();
 
   // State to store the list of contacts, initialized as an empty array
   const [rows, setRows] = useState([{
@@ -38,7 +38,6 @@ const TableList = ({table_name}) => {
   useEffect(() => {
     fetchSql(); // Calling the fetchContacts function
   }, []); // Empty dependency array ensures this runs only once
-
   // Rendering the component's UI
   return (
     <div style={{ maxHeight: "65vh", overflowY: "auto", border: "1px solid #ccc"}}>
@@ -47,21 +46,21 @@ const TableList = ({table_name}) => {
       <tr>
         <th key={"id"} className="sticky-header">ID</th>
         {Object.keys(rows[0]).map((key) => (key != "id" ?
-          <th key={key} className="sticky-header">{key}</th> : null
+          <th key={table_name + key} className="sticky-header">{key}</th> : null
         ))}
         <th className="sticky-header">Actions</th>
       </tr>
     </thead>
     <tbody>
       {rows.map((contact) => (
-        <tr key={contact.id + "-row"}>
-          <td key={contact.id + "-" + "id"}>{contact["id"]}</td>
+        <tr key={table_name + contact.id + "-row"}>
+          <td key={table_name + contact.id + "-" + "id"}>{contact["id"]}</td>
           {Object.keys(contact).map((key) => (key != "id" ?
-            <td key={contact.id + "-" + key}>{contact[key]}</td>:null
+            <td key={table_name + contact.id + "-" + key}>{types[key] == "date" ? convertTime(contact[key]): contact[key]}</td>:null
           ))}
           <td>
-            <DeleteBtn contId={contact.id} />
-            <UpdateButton contId={contact.id} />
+            <DeleteBtn contId={contact.id} table_name={table_name} />
+            <UpdateButton contId={contact.id}/>
           </td>
         </tr>
       ))}
@@ -71,6 +70,12 @@ const TableList = ({table_name}) => {
 
   );
 };
-
+function convertTime(param){
+  if(!param)
+    return "";
+  const date = new Date(param);
+  let help = `${date.getFullYear()}-${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+  return help;
+}
 // Exporting the ContactList component as the default export
 export default TableList;
