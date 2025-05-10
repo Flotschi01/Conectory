@@ -1,13 +1,15 @@
 import React, { useState, useRef, useEffect } from "react"; // Import React and the useState hook for managing component state
 import axios from "axios"; // Import axios for making HTTP requests
 import { useRefresh } from "./Wrapper";
+import { useGlobal } from "./GlobalContext";
 import DropDown from "./DropDown";
 import EnumPicker from "./EmumPicker";
 // Define the ContactForm functional component
 const ContactForm = ({table_name}) => {
-  const { refresh, getApiUrl, sqlCols } = useRefresh();
+  const { refresh, getApiUrl, sqlCols, setSelection } = useRefresh();
   const { updateID, setUpdateID } = useRefresh();
   const { types } = useRefresh();
+  const { personIDs, setPersID} = useGlobal();
 
   const inputRef = useRef([]);
 
@@ -22,7 +24,7 @@ const ContactForm = ({table_name}) => {
     });
 
     // Clear the form inputs after submission
-    setFormData(sqlCols.reduce((acc, field) => ({ ...acc, [field]: "" }), {}));
+    clearData();
     refresh();
     if (inputRef.current[0]) inputRef.current[0].focus();
   };
@@ -34,7 +36,7 @@ const ContactForm = ({table_name}) => {
     });
     setUpdateID(-1); // Reset the update ID to -1 after updating
     // Clear the form inputs after submission
-    setFormData(sqlCols.reduce((acc, field) => ({ ...acc, [field]: "" }), {}));
+    clearData();
     refresh();
   }
   const handleKeyDown = (event) => {//reseting the cursor to the first input field only called on the last input field
@@ -50,10 +52,17 @@ const ContactForm = ({table_name}) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
   
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const handleSearch = () => {
+    let help = [];
+    sqlCols.forEach(element => {
+      if(formData[element]){
+        help.push(element + " = " + formData[element]);
+      }
+    });
+    setSelection(help)
+    clearData()
+    refresh()
+  }
   const getSingleContact = async (id) => {
     try {
       setFormData(sqlCols.reduce((acc, field) => ({ ...acc, [field]: "" }), {}));
@@ -69,11 +78,23 @@ const ContactForm = ({table_name}) => {
       console.error("Error fetching contact:", error);
     }
   }
+  const clearData = () => {
+    setFormData(sqlCols.reduce((acc, field) => ({ ...acc, [field]: "" }), {}));
+    setPersID(-1)
+  }
   useEffect(() => {
     if (updateID != -1) {
       getSingleContact(updateID); // Fetch the contact data based on the updateID
     }
   }, [updateID]); 
+  useEffect(() => {
+    const  name  = "person1_id";
+    const value = personIDs[0];
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    const  name1  = "person2_id";
+    const value1 = personIDs[1];
+    setFormData((prev) => ({ ...prev, [name1]: value1 }));
+  }, [personIDs]); 
   // Render the form UI
   return (
     <div style={{ maxWidth: "95vw", overflowX: "auto", overflowY: "visible", border: "1px solid #ccc", position: "relative"}}>
@@ -90,11 +111,15 @@ const ContactForm = ({table_name}) => {
           <tr>
             <td>{updateID == -1 ? "/" : updateID}</td>
             {sqlCols.map((field, index) => (field == "id" ? null : // Skip rendering the 'id' field
+              field.endsWith("_id") && field.startsWith("person") ? // if its a person selector
+              <td key = {field}><p 
+              onChange={handleKeyDown}
+              >{formData[field] != undefined ? formData[field] : ""}</p></td> :
               field.endsWith("_e") ? 
               <td key={field}><EnumPicker 
               name={field}
               value={formData[field] ? formData[field] : ""}
-              onChange={handleChange} 
+              onChange={handleKeyDown} 
               options={types[field].match(/'([^']+)'/g).map(s => s.replace(/'/g, ''))}//complex to convert enum('option1','option2') to
                /></td>//array ['option1','option2']
               :
@@ -105,14 +130,15 @@ const ContactForm = ({table_name}) => {
                 name={field}
                 placeholder={field}
                 value={formData[field] ? types[field] == "date" ? convertTime(formData[field]): formData[field] : ""}
-                onChange={handleChange}
+                onChange={handleKeyDown}
                 onKeyDown={index === sqlCols.length - 1 ? handleKeyDown : undefined}
                 ref={inputRef[index]}
                 required = {(field === "first_name" || field === "last_name") ? 'required' : undefined }
               />
               </td>
             ))}
-            <td><button type="submit">Add/Update</button></td>
+            <td><button type="submit">Add/Update</button>
+            <button type = "button" onClick={handleSearch}>Search</button></td>
         </tr>
       </tbody>
       </table>

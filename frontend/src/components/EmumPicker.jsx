@@ -47,7 +47,7 @@ const EnumPicker = ({ name, value, onChange, options }) => {
               top: position.top,
               left: position.left,
               width: position.width,
-              zIndex: 9999,
+              zIndex: 999,
               background: "white",
               border: "1px solid #ccc",
               boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",

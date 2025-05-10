@@ -158,8 +158,9 @@ class SQLManager:
                 if col not in valid_columns:
                     raise ValueError(f"Invalid column name: {col}")
                 elif col != "id": #data[col] != '' and
-                    if(col == "created_at"):
-                        data[col] = datetime.strptime(data[col], "%a, %d %b %Y %H:%M:%S GMT").date()
+                    if(data[col] and self.get_Columns(table_name)[col] == "date"):
+                        dt = datetime.strptime(data[col], "%a, %d %b %Y %H:%M:%S GMT")
+                        data[col] = dt.strftime("%Y-%m-%d")
                     help.append(col)
             cursor = self._mysql.connection.cursor()
             Data = (data[col] for col in help)

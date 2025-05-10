@@ -1,5 +1,3 @@
-import React, { useState } from "react";
-import TableList from "./TableList";
 import { useRefresh } from "./Wrapper";
 import ProjSelecter from "./Projection";
 
@@ -19,6 +17,7 @@ return (
             </div>
         <button type="submit">Show</button>
         </form>
+        
     );
 };
 

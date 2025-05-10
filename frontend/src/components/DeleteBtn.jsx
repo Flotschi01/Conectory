@@ -50,6 +50,7 @@ const WarnWindow = ({handler, closer}) => {
       top: position.top,
       left: position.left,
       width: position.width,
+      zIndex: 9999,
       backgroundColor: "white",
       border: "1px solid black"
       }}>
