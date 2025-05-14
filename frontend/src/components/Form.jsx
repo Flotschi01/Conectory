@@ -41,6 +41,7 @@ const ContactForm = ({table_name}) => {
   }
   const handleKeyDown = (event) => {//reseting the cursor to the first input field only called on the last input field
     // Check if Enter key is pressed (keyCode 13 or 'Enter')
+
     if (event.key === 'Enter') {
 
       // Reset the focus to the input element
@@ -50,6 +51,7 @@ const ContactForm = ({table_name}) => {
     }
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
   };
   
   const handleSearch = () => {
